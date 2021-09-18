@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="generator" content="Pelican" />
+        <title>Homework 1 BIOSTAT823</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Blog-Homework-823 Atom Feed" />
+        <meta name="description" content="Problem 4: Largest palindrome product Solved By: 489932 A palindromic number reads the same both ways. The largest palindrome made from the..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Blog-Homework-823</a></h1>
+                <nav><ul>
+                    <li><a href="/pages/about.html">About</a></li>
+                    <li class="active"><a href="/category/misc.html">misc</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/homework-1-biostat823.html" rel="bookmark"
+           title="Permalink to Homework 1 BIOSTAT823">Homework 1 BIOSTAT823</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2021-09-05T00:00:00-04:00">
+                Published: Sun 05 September 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>Problem 4: Largest palindrome product</h1>
+<p>Solved By: 489932</p>
+<p>A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+Find the largest palindrome made from the product of two 3-digit numbers.</p>
+<p>This problem is easy to achieve with the help of python, I just follow the logic, finding the two 3-digit numbers and getting the product of that two numbers, and then checking if the product is palindrome or not. 
+Next, I store all the results gotten from the last step and find the maximum.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">palindrome</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Return the largest palindrome made from the product of two 3-digit numbers.&#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">j</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">j</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">j</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Run palindrome() and get 906609.</p>
+<h1>Problem 55: Lychrel numbers</h1>
+<p>Solved By: 54082</p>
+<p>If we take 47, reverse and add, 47 + 74 = 121, which is palindromic.</p>
+<p>Not all numbers produce palindromes so quickly. For example,</p>
+<p>349 + 943 = 1292,
+1292 + 2921 = 4213
+4213 + 3124 = 7337</p>
+<p>That is, 349 took three iterations to arrive at a palindrome.</p>
+<p>Although no one has proved it yet, it is thought that some numbers, like 196, never produce a palindrome. A number that never forms a palindrome through the reverse and add process is called a Lychrel number. Due to the theoretical nature of these numbers, and for the purpose of this problem, we shall assume that a number is Lychrel until proven otherwise. In addition you are given that for every number below ten-thousand, it will either (i) become a palindrome in less than fifty iterations, or, (ii) no one, with all the computing power that exists, has managed so far to map it to a palindrome. In fact, 10677 is the first number to be shown to require over fifty iterations before producing a palindrome: 4668731596684224866951378664 (53 iterations, 28-digits).</p>
+<p>Surprisingly, there are palindromic numbers that are themselves Lychrel numbers; the first example is 4994.</p>
+<p>How many Lychrel numbers are there below ten-thousand?</p>
+<p>NOTE: Wording was modified slightly on 24 April 2007 to emphasise the theoretical nature of Lychrel numbers.</p>
+<p>Depending on the definition of Lychrel number, I first generate a function <strong>checklychrel</strong> to check if the a number can form a palindrome in less than 50 iterations, which will check if a number of a lychrel number or not. Then I have <strong>lychrel</strong> function to add all occurrences up.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rev</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return the reverse of a number&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">checklychrel</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Chek=ck whether a number is lychrel or not&#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">rev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span> 
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">lychrel</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Return the Lychrel numbers below ten-thousand.&#39;&#39;&#39;</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+        <span class="n">count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">checklychrel</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Run lychrel() and get 249.</p>
+<h1>Problem 80:Square root digital expansion</h1>
+<p>Solved By : 19756</p>
+<p>It is well known that if the square root of a natural number is not an integer, then it is irrational. The decimal expansion of such square roots is infinite without any repeating pattern at all.</p>
+<p>The square root of two is 1.41421356237309504880..., and the digital sum of the first one hundred decimal digits is 475.</p>
+<p>For the first one hundred natural numbers, find the total of the digital sums of the first one hundred decimal digits for all the irrational square roots.</p>
+<p>In this problem, I first need to limit the range is the first 100 natural numbers, then check if they are irrational number or not by checking whether its square root is an integer. Then convert the data type from float to string and find the first 100 digits. 
+Next, I convert the datatype back into integer and sum them up.
+Note, I use <em>getcontext().prec = 200</em> here so that I can get the first 100 digits of an irrational number.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">sqrt_dig_exp</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;For the first 100 natural numbers, return the total of the digital sums of the first 100 decimal digits for all the irrational square roots.&quot;&quot;&quot;</span>
+    <span class="n">getcontext</span><span class="p">()</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()):</span>
+            <span class="n">dec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)[:</span><span class="mi">100</span><span class="p">]</span>
+            <span class="n">decimal</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dec</span><span class="p">:</span>
+                <span class="n">decimal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+            <span class="n">singel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">decimal</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">singel</span>
+    <span class="k">return</span> <span class="n">res</span>
+</code></pre></div>
+
+
+<p>Run sqrt_dig_exp() and get 40886.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

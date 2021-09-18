@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="generator" content="Pelican" />
+        <title>Blog-Homework-823 - Yuxuan Chen</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Blog-Homework-823 Atom Feed" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Blog-Homework-823</a></h1>
+                <nav><ul>
+                    <li><a href="/pages/about.html">About</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/homework-2-biostat823.html">Homework 2 BIOSTAT823</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2021-09-17T00:00:00-04:00">
+                Published: Fri 17 September 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info --><h1>Homework 2 BIOSTAT823 Number theory and a Google recruitment puzzle</h1>
+<h2>Write a function to generate an arbitrary large expansion of a mathematical expression</h2>
+<p>This function is the start of this whole problem. This function can expand a expression and return its expansion. This function is pretty straightforward. The only problem is the usage of sympy. Here I use N() to expand the mathematical expression.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">expansion</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">mul</span><span class="p">,</span><span class="n">digits</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Generate an arbitrary large expansion of a mathematical expression&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">mul</span><span class="o">%</span><span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">digits</span><span class="o">%</span><span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputed multiplier and number of digits should be integers!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">N</span><span class="p">(</span><span class="n">mul</span><span class="o">*</span><span class="n">exp</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Run palindrome() and get 906609.</p>
+<h2>Write a function to check if a number is prime</h2>
+<p>Here is a function to check if a number is a prime or not. I first tried Sieve of Eratosthenes, but that algorithm is not that efficient. Thus, I simply check prime by divide the number with integer that is smaller than the square root of itself.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;check whether integer n is prime or not&#39;&#39;&#39;</span>
+
+    <span class="c1"># 1 is not prime number and n should be positive</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># check integer from 2 to int(sqrt(x))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="n">i</span><span class="o">*</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+
+
+<h2>Write a function to generate sliding windows of a specified width from a long iterable</h2>
+<p>This function returns sliding windows of a specified width of a long number. Note those last some outputs in the list is not long enough. However, this is not a problem because we deal with that in the main function.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">slid_win</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">win</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate sliding windows of a specified width&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">win</span><span class="o">%</span><span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputed window length and number of digits should be integers!&quot;</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span> 
+    <span class="n">dec_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec_str</span><span class="p">)):</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_str</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">win</span><span class="p">])</span>    
+    <span class="k">return</span> <span class="n">res</span> 
+</code></pre></div>
+
+
+<h2>Unit test for three functions</h2>
+<p>Here I do unit test to check my functions.</p>
+<div class="highlight"><pre><span></span><code><span class="o">%%</span><span class="n">file</span> <span class="n">helpers</span><span class="o">.</span><span class="n">py</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">expansion</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">mul</span><span class="p">,</span><span class="n">digits</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Generate an arbitrary large expansion of a mathematical expression&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">digits</span><span class="o">%</span><span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputed multiplier and number of digits should be integers!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">N</span><span class="p">(</span><span class="n">mul</span><span class="o">*</span><span class="n">exp</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;check whether integer n is prime or not&#39;&#39;&#39;</span>
+
+    <span class="c1"># 1 is not prime number and n should be positive</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># check integer from 2 to int(sqrt(x))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="n">i</span><span class="o">*</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">slid_win</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">win</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate sliding windows of a specified width!&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">win</span><span class="o">%</span><span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputed window length and number of digits should be integers!&quot;</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span> 
+    <span class="n">dec_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec_str</span><span class="p">)):</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_str</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">win</span><span class="p">])</span>    
+    <span class="k">return</span> <span class="n">res</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="o">%%</span><span class="n">file</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">helpers</span> <span class="kn">import</span> <span class="n">expansion</span><span class="p">,</span> <span class="n">is_prime</span><span class="p">,</span> <span class="n">slid_win</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">class</span> <span class="nc">TestHelpers</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expansion</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;.4f&#39;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expansion</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">e</span><span class="p">,</span><span class="mi">100</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">e</span><span class="p">,</span> <span class="s1">&#39;.99f&#39;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">expansion</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">22</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">format</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;.20f&#39;</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">test_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">37</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_prime</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_slid_win</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">slid_win</span><span class="p">(</span><span class="mf">3.1415926</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;1415&#39;</span><span class="p">,</span> <span class="s1">&#39;4159&#39;</span><span class="p">,</span> <span class="s1">&#39;1592&#39;</span><span class="p">,</span> <span class="s1">&#39;5926&#39;</span><span class="p">,</span><span class="s1">&#39;926&#39;</span><span class="p">,</span><span class="s1">&#39;26&#39;</span><span class="p">,</span><span class="s1">&#39;6&#39;</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err">!</span> <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">unittest</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+
+<p>Finished check and functions are good!</p>
+<h2>Main Function</h2>
+<p>Here is the main function. I also deal the those number start with 0 here.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_prim</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">win</span> <span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Return the first prime with certain number of digits in a expression.&#39;&#39;&#39;</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">expansion</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span><span class="n">mul</span><span class="p">,</span><span class="n">digits</span><span class="p">)</span>
+    <span class="n">num_slide</span> <span class="o">=</span> <span class="n">slid_win</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">win</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">num_slide</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_slide</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">win</span><span class="p">:</span>
+            <span class="k">return</span><span class="p">(</span><span class="s2">&quot;no prime&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_slide</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_prime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_slide</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="k">return</span> <span class="n">num_slide</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">find_prim</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Get the first 10-digit prime in the decimal expansion of 17π, 8649375157.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/homework-1-biostat823.html" rel="bookmark"
+                           title="Permalink to Homework 1 BIOSTAT823">Homework 1 BIOSTAT823</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2021-09-05T00:00:00-04:00">
+                Published: Sun 05 September 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info -->                <h1>Problem 4: Largest palindrome product</h1>
+<p>Solved By: 489932</p>
+<p>A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+Find the largest palindrome made from the product of two 3-digit numbers.</p>
+<p>This problem is easy to achieve with …</p>
+                <a class="readmore" href="/homework-1-biostat823.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
