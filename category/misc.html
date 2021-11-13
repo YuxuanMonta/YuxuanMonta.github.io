@@ -20,7 +20,179 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/homework-4-biostat823.html">Homework 4 BIOSTAT823</a></h1>
+                    <h1 class="entry-title"><a href="/homework-5-biostat823.html">Homework 5 BIOSTAT823</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2021-11-13T00:00:00-05:00">
+                Published: Sat 13 November 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info --><h1>Homework 4 Dive into Deep Learning</h1>
+<p>In this homework,I tried to apply neural network technique to classify the insects pictures and used </p>
+<h2>Read Data</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">shap</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">image_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">image_dataset_from_directory</span><span class="p">(</span>
+    <span class="s2">&quot;insects/train&quot;</span><span class="p">,</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;inferred&quot;</span><span class="p">,</span>
+    <span class="n">label_mode</span> <span class="o">=</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+    <span class="n">image_size</span><span class="o">=</span><span class="n">image_size</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">image_dataset_from_directory</span><span class="p">(</span>
+    <span class="s2">&quot;insects/test&quot;</span><span class="p">,</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;inferred&quot;</span><span class="p">,</span>
+    <span class="n">label_mode</span> <span class="o">=</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+    <span class="n">image_size</span><span class="o">=</span><span class="n">image_size</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<h2>First glance of the data</h2>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">):</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h2>Neural Network</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># standardize the data</span>
+<span class="n">normalization_layer</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Rescaling</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">255</span><span class="p">)</span>
+
+<span class="c1"># apply the layer to dataset</span>
+<span class="n">normalized_ds</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">normalization_layer</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span>
+<span class="n">image_batch</span><span class="p">,</span> <span class="n">labels_batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">normalized_ds</span><span class="p">))</span>
+
+<span class="c1"># add augmentation to avoid overfitting</span>
+<span class="n">data_augmentation</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+  <span class="p">[</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">RandomFlip</span><span class="p">(</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+                      <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">image_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">image_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">RandomRotation</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">RandomZoom</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span>
+  <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">num_classes</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">data_augmentation</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Rescaling</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">255</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">image_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">MaxPooling2D</span><span class="p">(),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">MaxPooling2D</span><span class="p">(),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">MaxPooling2D</span><span class="p">(),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">),</span>
+    <span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">)</span>
+<span class="p">])</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+              <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">CategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">epochs</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+  <span class="n">train_data</span><span class="p">,</span>
+  <span class="n">validation_data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
+  <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="c1"># visualize the results</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span>
+<span class="n">v_accuracy</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_accuracy&#39;</span><span class="p">]</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+<span class="n">v_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+
+<span class="n">epochs_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs_range</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs_range</span><span class="p">,</span> <span class="n">v_accuracy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Validation Accuracy&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs_range</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs_range</span><span class="p">,</span> <span class="n">v_loss</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and Validation Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+
+<h2>Shapley Explanation</h2>
+<div class="highlight"><pre><span></span><code><span class="n">X_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">train_data</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">train_data</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">test_data</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">test_data</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">GradientExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">)</span>
+<span class="n">sv</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="n">sv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">shap</span><span class="o">.</span><span class="n">image_plot</span><span class="p">([</span><span class="n">sv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span> <span class="n">X_test</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>The plot given by shap shows the explanation for each level on the predictions. The red pixels increase the model's output, while the blue pixels decrease the model's output.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/homework-4-biostat823.html" rel="bookmark"
+                           title="Permalink to Homework 4 BIOSTAT823">Homework 4 BIOSTAT823</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2021-10-24T00:00:00-04:00">
                 Published: Sun 24 October 2021
@@ -31,224 +203,13 @@
         </address>
 <p>In <a href="/category/misc.html">misc</a>.</p>
 
-</footer><!-- /.post-info --><h1>Homework 4 Is there life after graduate school?</h1>
+</footer><!-- /.post-info -->                <h1>Homework 4 Is there life after graduate school?</h1>
 <p>In this homework, I basiclly make a dashboard of the data about Science and Engineering PhDs awarded in the US. I use Dash package to make the dashboard.</p>
 <h2>Read Data</h2>
-<p>Here, I use the table 1, table 2 and table 7 to do analysis. 
-Table 1 is Doctorate recipients from U.S. colleges and universities from 1958 to 2017.
-Table 2 is Doctorate-granting institutions and doctorate recipients per institution from 1973 to 2017.
-Table 7 is Doctorate-granting institutions, by state or location and major science and engineering fields of study in 2017.
-Note, here I did not modify the original table 1 and table 2, just directly read them. But I modified the table 7 before reading it to make it easier to be used for analysis. In the original table, the state name is in the same level of institution name, which is not what is supposed to be. So I extracted the state name and put them in the first level of row index. Also, for column name,  the All Fields should be 3 levels, but there is only one level in the original data. So I also modified that.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
-<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
-<span class="kn">import</span> <span class="nn">dash</span>
-<span class="kn">from</span> <span class="nn">dash.dependencies</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
-<span class="kn">from</span> <span class="nn">dash</span> <span class="kn">import</span> <span class="n">dcc</span>
-<span class="kn">from</span> <span class="nn">dash</span> <span class="kn">import</span> <span class="n">html</span>
-</code></pre></div>
-
-
-<div class="highlight"><pre><span></span><code><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;data/sed17-sr-tab001.xlsx&quot;</span><span class="p">,</span><span class="n">header</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;data/sed17-sr-tab002.xlsx&quot;</span><span class="p">,</span><span class="n">header</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
-
-<span class="n">df2</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span><span class="s2">&quot;Doctorate-granting_institutions&quot;</span><span class="p">,</span><span class="s1">&#39;Doctorate recipients&#39;</span><span class="p">,</span><span class="s1">&#39;Mean (per institution)&#39;</span><span class="p">,</span><span class="s1">&#39;Median (per institution)&#39;</span><span class="p">]</span>
-
-<span class="n">df_plot1</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="n">on</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span><span class="s2">&quot;Doctorate recipients&quot;</span><span class="p">])</span>
-<span class="n">df_plot1</span>
-</code></pre></div>
-
-
-<div class="highlight"><pre><span></span><code><span class="n">df3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;data/sed17-sr-tab007-new.xlsx&quot;</span><span class="p">,</span>
-                    <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> 
-                    <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">df3</span>
-</code></pre></div>
-
-
-<h2>Dashboard</h2>
-<p>In the dashboard, I basiclly have 2 plots. 
-The first plot is a time series for Doctorate recipients, Doctorate-granting instituion number and the mean and median value for the Doctorate recipients per institutions. I merge the table 1 and table 2 for this plot. Users can use the slider to choose the year range and use the drawdown to choose the variable they are interested in.
-The second plot is a pie plot created by the new table 7. This plot shows the number and proportion of Doctorate-granting of a institution in each state by  major. Users can use the drawdowns to choose the state, and the fields they are interested in. Note, when choosing the major, the choices of the second drawdown and the third drawdown will change depending on what is chosen in the first drawdown. </p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">Dash</span><span class="p">()</span>
-
-
-<span class="n">plot1_year_indicators</span> <span class="o">=</span> <span class="n">df_plot1</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-<span class="n">plot1_col_indicator</span>   <span class="o">=</span> <span class="n">df_plot1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">% c</span><span class="s2">hange from previous year&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
-
-<span class="n">plot2_index_state</span>     <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-<span class="n">plot2_index_insti</span>     <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-<span class="n">plot2_columns_level1</span>  <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-
-
-
-<span class="n">app</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-    <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-
-        <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Slider</span><span class="p">(</span>
-                <span class="nb">id</span>     <span class="o">=</span> <span class="s1">&#39;plot1_year&#39;</span><span class="p">,</span>
-                <span class="nb">min</span>    <span class="o">=</span> <span class="n">plot1_year_indicators</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
-                <span class="nb">max</span>    <span class="o">=</span> <span class="n">plot1_year_indicators</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
-                <span class="n">value</span>  <span class="o">=</span> <span class="n">plot1_year_indicators</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
-                <span class="n">step</span>   <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">marks</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1973&#39;</span><span class="p">:</span> <span class="s1">&#39;1973&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;1978&#39;</span><span class="p">:</span> <span class="s1">&#39;1978&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;1983&#39;</span><span class="p">:</span> <span class="s1">&#39;1983&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;1988&#39;</span><span class="p">:</span> <span class="s1">&#39;1988&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;1993&#39;</span><span class="p">:</span> <span class="s1">&#39;1993&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;1998&#39;</span><span class="p">:</span> <span class="s1">&#39;1998&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;2003&#39;</span><span class="p">:</span> <span class="s1">&#39;2003&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;2008&#39;</span><span class="p">:</span> <span class="s1">&#39;2008&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;2013&#39;</span><span class="p">:</span> <span class="s1">&#39;2013&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;2017&#39;</span><span class="p">:</span> <span class="s1">&#39;2017&#39;</span><span class="p">}</span>
-            <span class="p">),</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                <span class="nb">id</span>      <span class="o">=</span> <span class="s1">&#39;plot1_yaxis&#39;</span><span class="p">,</span>
-                <span class="n">options</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plot1_col_indicator</span><span class="p">],</span>
-                <span class="n">value</span>   <span class="o">=</span> <span class="s1">&#39;Doctorate recipients&#39;</span>
-            <span class="p">)</span>
-
-        <span class="p">],</span>
-        <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;49%&#39;</span><span class="p">,</span> <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;inline-block&#39;</span><span class="p">}),</span>
-
-        <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-            <span class="s2">&quot;Select the State&quot;</span><span class="p">,</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                <span class="nb">id</span>     <span class="o">=</span> <span class="s1">&#39;plot2_state&#39;</span><span class="p">,</span>
-                <span class="n">options</span><span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plot2_index_state</span><span class="p">],</span>
-                <span class="n">value</span>  <span class="o">=</span> <span class="s1">&#39;Alabama&#39;</span><span class="p">,</span>
-                <span class="n">style</span>  <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;35px&#39;</span><span class="p">}</span>
-            <span class="p">)</span>
-        <span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;24%&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">}),</span>
-
-
-        <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-            <span class="s2">&quot;Select the Field&quot;</span><span class="p">,</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;fields_1&#39;</span><span class="p">,</span>
-                <span class="n">options</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plot2_columns_level1</span><span class="p">],</span>
-                <span class="n">value</span><span class="o">=</span><span class="s1">&#39;All fields&#39;</span>
-            <span class="p">),</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;fields_2&#39;</span>
-            <span class="p">),</span>
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;fields_3&#39;</span>
-            <span class="p">)</span>
-
-        <span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;24%&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">})</span>
-
-    <span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;borderBottom&#39;</span><span class="p">:</span> <span class="s1">&#39;thin lightgrey solid&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;backgroundColor&#39;</span><span class="p">:</span> <span class="s1">&#39;rgb(250, 250, 250)&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;55px 5px&#39;</span>
-    <span class="p">}),</span>
-
-
-
-
-    <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-        <span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;plot1&#39;</span><span class="p">)</span>
-    <span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;49%&#39;</span><span class="p">,</span> <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;inline-block&#39;</span><span class="p">,</span> <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;0 20&#39;</span><span class="p">}),</span>
-
-
-    <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
-        <span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;plot2&#39;</span><span class="p">),</span>
-    <span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;49%&#39;</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">}),</span>
-<span class="p">])</span>
-
-
-
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fields_2&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_1&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;plot2_state&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">set_cities_options</span><span class="p">(</span><span class="n">fields_1</span><span class="p">,</span><span class="n">plot2_state</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df3</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">plot2_state</span><span class="p">,</span><span class="n">fields_1</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()]</span>
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fields_2&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_2&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">set_cities_value</span><span class="p">(</span><span class="n">available_options</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">available_options</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fields_3&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_1&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_2&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;plot2_state&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">set_cities_options</span><span class="p">(</span><span class="n">fields_1</span><span class="p">,</span><span class="n">fields_2</span><span class="p">,</span><span class="n">plot2_state</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">df3</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">plot2_state</span><span class="p">,</span><span class="n">fields_1</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="n">fields_2</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()]</span>
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;fields_3&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_3&#39;</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">set_cities_value</span><span class="p">(</span><span class="n">available_options</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">available_options</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;plot1&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;plot1_year&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;plot1_yaxis&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)])</span>
-
-<span class="k">def</span> <span class="nf">plot1</span><span class="p">(</span><span class="n">xaxis</span><span class="p">,</span><span class="n">yaxis</span><span class="p">):</span>
-
-    <span class="n">plot1_index</span> <span class="o">=</span> <span class="n">df_plot1</span><span class="o">.</span><span class="n">Year</span><span class="p">[</span> <span class="n">df_plot1</span><span class="o">.</span><span class="n">Year</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">xaxis</span><span class="p">)]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">df_plot1_0</span>  <span class="o">=</span> <span class="n">df_plot1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">plot1_index</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">df_plot1_0</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">],</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">df_plot1_0</span><span class="p">[</span><span class="n">yaxis</span><span class="p">],</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines+markers&#39;</span>
-        <span class="p">)],</span>
-            <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-                <span class="n">xaxis</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s2">&quot;Year&quot;</span>
-                <span class="p">},</span>
-                <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">yaxis</span>
-                <span class="p">},</span>
-                <span class="n">margin</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-                <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
-                <span class="n">hovermode</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span>
-        <span class="p">)</span>
-    <span class="p">}</span>
-
-
-<span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
-    <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;plot2&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
-    <span class="p">[</span><span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;plot2_state&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_1&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_2&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">),</span>
-     <span class="n">dash</span><span class="o">.</span><span class="n">dependencies</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;fields_3&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)])</span>
-<span class="k">def</span> <span class="nf">plot2</span><span class="p">(</span><span class="n">plot2_state</span><span class="p">,</span> <span class="n">fields_1</span><span class="p">,</span> <span class="n">fields_2</span><span class="p">,</span> <span class="n">fields_3</span><span class="p">):</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">df3</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">plot2_state</span><span class="p">,</span><span class="n">fields_1</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="n">fields_2</span><span class="p">],</span> 
-                 <span class="n">values</span> <span class="o">=</span> <span class="n">fields_3</span><span class="p">,</span> 
-                 <span class="n">names</span><span class="o">=</span><span class="n">df3</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">plot2_state</span><span class="p">,</span><span class="n">fields_1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-                 <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Doctorate-granting institutions,&lt;br&gt;by state or location and &lt;br&gt;major science and engineering fields of study&lt;br&gt;2017&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fig</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run_server</span><span class="p">()</span>
-</code></pre></div>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Here, I use the table 1, table 2 and table 7 to …</p>
+                <a class="readmore" href="/homework-4-biostat823.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
