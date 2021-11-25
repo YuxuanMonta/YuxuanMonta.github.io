@@ -4,9 +4,10 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>Blog-Homework-823 - Yuxuan Chen</title>
+        <title>Final Project BIOSTAT823</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Blog-Homework-823 Atom Feed" />
+        <meta name="description" content="Covid-19 Daily Case and Death Prediction Team Member: Caihan Wang, Yifeng Tang, Yuxuan Chen Website Source: Github Repository:..." />
 </head>
 
 <body id="index" class="home">
@@ -14,13 +15,18 @@
                 <h1><a href="/">Blog-Homework-823</a></h1>
                 <nav><ul>
                     <li><a href="/pages/about.html">About</a></li>
-                    <li><a href="/category/misc.html">misc</a></li>
+                    <li class="active"><a href="/category/misc.html">misc</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/final-project-biostat823.html" rel="bookmark"
+           title="Permalink to Final Project BIOSTAT823">Final Project BIOSTAT823</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/final-project-biostat823.html">Final Project BIOSTAT823</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2021-11-24T00:00:00-05:00">
                 Published: Wed 24 November 2021
@@ -31,7 +37,7 @@
         </address>
 <p>In <a href="/category/misc.html">misc</a>.</p>
 
-</footer><!-- /.post-info --><h1>Covid-19 Daily Case and Death Prediction</h1>
+</footer><!-- /.post-info -->      <h1>Covid-19 Daily Case and Death Prediction</h1>
 <p>Team Member: <a href="https://github.com/Caihanwang">Caihan Wang</a>, <a href="https://github.com/Yifeng-T">Yifeng Tang</a>, <a href="https://github.com/YuxuanMonta">Yuxuan Chen</a>  </p>
 <h2>Website Source:</h2>
 <ul>
@@ -86,148 +92,11 @@ In the figures above, after comparing with the true value of COVID cases and dea
 <p>In this project, as shown above, our forecast results for the whole United state were considerably good. However, if we instead focused on the forecast in each state, there should be more variance and the prediction of some state may not be as good as that of the whole United State. However, this should be reasonable and acceptable as some states had pretty small numbers for confirmed cases and deaths, sometimes even as small as 0. Besides, we may not need to worry about that as our RMSEs from cross validation were acceptable. Therefore, people should be able to get a good forecast for the future number of Covid-19 cases and deaths, especially at the national level.<br>
 There are still a lot of things that we can continue working on. First, we considered the seasonal characteristics of the time series data by using 7 models, but we did not consider the trend of the time series mode as the data in some states are not stationary. For those non-stationary data, we may consider using some strategies in ARIMA like differencing. Besides, our model might not have good performance in long term forecasts as we have to use what we predicted as input of our models to continue predicting the future number of cases and deaths.  </p>
 <h2>Individual Part</h2>
-<p>In this project, I worked on the EDA of time series data, model designs, training models, hyperparameter tuning, model validation and also report writing. After all this work, the most impressive point of this case is that we do not have to use a time series model like ARIMA to get acceptable forecast results for time series data. As far as I'm concerned, it is pretty hard for time series models to include both static predictors and time series predictors, while it could be somewhat achieved by model learning algorithms. Besides, when doing hyperparameter tuning, it is really a tradeoff between time cost and model performance improvement. For example, when I optimized the parameters of Random Forest, it took me about 3 hours to do hyperparameter tuning of one model with few RMSE decreases. Clearly, it was not efficient enough. It is good for the Random Forest model that we can directly choose the optimal value of the number of features. I could save a lot of time in this way. However, if I used another model, I may have to sacrifice some model performance to improve the efficiency. </p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>In this project, I worked on the EDA of time series data, model designs, training models, hyperparameter tuning, model validation and also report writing. After all this work, the most impressive point of this case is that we do not have to use a time series model like ARIMA to get acceptable forecast results for time series data. As far as I'm concerned, it is pretty hard for time series models to include both static predictors and time series predictors, while it could be somewhat achieved by model learning algorithms. Besides, when doing hyperparameter tuning, it is really a tradeoff between time cost and model performance improvement. For example, when I optimized the parameters of Random Forest, it took me about 3 hours to do hyperparameter tuning of one model with few RMSE decreases. Clearly, it was not efficient enough. It is good for the Random Forest model that we can directly choose the optimal value of the number of features. I could save a lot of time in this way. However, if I used another model, I may have to sacrifice some model performance to improve the efficiency. </p>
+    </div><!-- /.entry-content -->
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/homework-5-biostat823.html" rel="bookmark"
-                           title="Permalink to Homework 5 BIOSTAT823">Homework 5 BIOSTAT823</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2021-11-13T00:00:00-05:00">
-                Published: Sat 13 November 2021
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
-        </address>
-<p>In <a href="/category/misc.html">misc</a>.</p>
-
-</footer><!-- /.post-info -->                <h1>Homework 4 Dive into Deep Learning</h1>
-<p>In this homework,I tried to apply neural network technique to classify the insects pictures and used </p>
-<h2>Read Data</h2>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">shap</span>
-</code></pre></div>
-
-
-<div class="highlight"><pre><span></span><code><span class="n">image …</span></code></pre></div>
-                <a class="readmore" href="/homework-5-biostat823.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/homework-4-biostat823.html" rel="bookmark"
-                           title="Permalink to Homework 4 BIOSTAT823">Homework 4 BIOSTAT823</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2021-10-24T00:00:00-04:00">
-                Published: Sun 24 October 2021
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
-        </address>
-<p>In <a href="/category/misc.html">misc</a>.</p>
-
-</footer><!-- /.post-info -->                <h1>Homework 4 Is there life after graduate school?</h1>
-<p>In this homework, I basiclly make a dashboard of the data about Science and Engineering PhDs awarded in the US. I use Dash package to make the dashboard.</p>
-<h2>Read Data</h2>
-<p>Here, I use the table 1, table 2 and table 7 to …</p>
-                <a class="readmore" href="/homework-4-biostat823.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/homework-3-biostat823.html" rel="bookmark"
-                           title="Permalink to Homework 3 BIOSTAT823">Homework 3 BIOSTAT823</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2021-10-01T00:00:00-04:00">
-                Published: Fri 01 October 2021
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
-        </address>
-<p>In <a href="/category/misc.html">misc</a>.</p>
-
-</footer><!-- /.post-info -->                <h1>Homework 3 Creating effective visualizations using best practices</h1>
-<p>I use ipywidgets and plotly package to create interactive plot. I choose that because it is pretty easy to understand and kind of similar to shiny app, which I am more familiar with. Besides, the plotly is good package to create a …</p>
-                <a class="readmore" href="/homework-3-biostat823.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/homework-2-biostat823.html" rel="bookmark"
-                           title="Permalink to Homework 2 BIOSTAT823">Homework 2 BIOSTAT823</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2021-09-17T00:00:00-04:00">
-                Published: Fri 17 September 2021
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
-        </address>
-<p>In <a href="/category/misc.html">misc</a>.</p>
-
-</footer><!-- /.post-info -->                <h1>Homework 2 BIOSTAT823 Number theory and a Google recruitment puzzle</h1>
-<h2>Write a function to generate an arbitrary large expansion of a mathematical expression</h2>
-<p>This function is the start of this whole problem. This function can expand a expression and return its expansion. This function is pretty straightforward. The only problem …</p>
-                <a class="readmore" href="/homework-2-biostat823.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/homework-1-biostat823.html" rel="bookmark"
-                           title="Permalink to Homework 1 BIOSTAT823">Homework 1 BIOSTAT823</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2021-09-05T00:00:00-04:00">
-                Published: Sun 05 September 2021
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yuxuan-chen.html">Yuxuan Chen</a>
-        </address>
-<p>In <a href="/category/misc.html">misc</a>.</p>
-
-</footer><!-- /.post-info -->                <h1>Problem 4: Largest palindrome product</h1>
-<p>Solved By: 489932</p>
-<p>A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
-Find the largest palindrome made from the product of two 3-digit numbers.</p>
-<p>This problem is easy to achieve …</p>
-                <a class="readmore" href="/homework-1-biostat823.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
